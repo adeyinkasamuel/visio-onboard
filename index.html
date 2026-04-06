@@ -723,27 +723,39 @@
   form.addEventListener('input', updateProgress);
   form.addEventListener('change', updateProgress);
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    const data = new FormData(form);
-    const obj = {};
-    for (let [k, v] of data.entries()) {
-      if (obj[k]) {
-        obj[k] = Array.isArray(obj[k]) ? [...obj[k], v] : [obj[k], v];
-      } else {
-        obj[k] = v;
-      }
+  async function handleSubmit(e) {
+  e.preventDefault();
+  
+  const data = new FormData(form);
+  const obj = {};
+  for (let [k, v] of data.entries()) {
+    if (obj[k]) {
+      obj[k] = Array.isArray(obj[k]) ? [...obj[k], v] : [obj[k], v];
+    } else {
+      obj[k] = v;
     }
-    console.log('Form data:', JSON.stringify(obj, null, 2));
-
-    form.style.display = 'none';
-    document.getElementById('successScreen').style.display = 'block';
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-
-    // Update header dots
-    dots.forEach(d => { d.classList.remove('active'); d.classList.add('done'); });
-    progress.style.width = '100%';
   }
+
+  const btn = document.querySelector('.btn-submit');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  try {
+    await fetch('https://primary-production-a58ff.up.railway.app/webhook/visio-onboard', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(obj)
+    });
+  } catch (err) {
+    console.error('Submission error:', err);
+  }
+
+  form.style.display = 'none';
+  document.getElementById('successScreen').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  dots.forEach(d => { d.classList.remove('active'); d.classList.add('done'); });
+  progress.style.width = '100%';
+}
 
   updateProgress();
 </script>
