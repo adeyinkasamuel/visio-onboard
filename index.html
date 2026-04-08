@@ -241,6 +241,11 @@
   }
 
   .check-item:hover { border-color: var(--accent); background: rgba(91,79,255,0.03); }
+  /* FIX: keep card visually selected when checkbox is checked (allows multi-select) */
+  .check-item:has(input[type="checkbox"]:checked) {
+    border-color: var(--accent);
+    background: rgba(91,79,255,0.07);
+  }
   .check-item input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
   .check-item span { font-size: 14px; color: var(--ink); }
 
@@ -260,6 +265,11 @@
   }
 
   .radio-item:hover { border-color: var(--accent); background: rgba(91,79,255,0.03); }
+  /* FIX: keep selected radio card visually highlighted */
+  .radio-item:has(input[type="radio"]:checked) {
+    border-color: var(--accent);
+    background: rgba(91,79,255,0.06);
+  }
   .radio-item input[type="radio"] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; margin-top: 2px; flex-shrink: 0; }
 
   .radio-item .radio-content { display: flex; flex-direction: column; }
@@ -725,7 +735,7 @@
 
   async function handleSubmit(e) {
   e.preventDefault();
-  
+
   const data = new FormData(form);
   const obj = {};
   for (let [k, v] of data.entries()) {
